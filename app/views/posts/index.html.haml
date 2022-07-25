@@ -1,0 +1,23 @@
+%h1 Listing posts
+
+%table#Table{:style => "width:100%; border:2px solid black;"}
+  %thead
+    %tr
+      %th User
+      %th Message
+      %th
+      %th
+      %th
+
+  %tbody
+    - @posts.each do |post|
+      %tr
+        %td= post.user_id
+        %td= post.message
+        %td= link_to 'Show', post
+        %td= link_to 'Edit', edit_post_path(post)
+        %td= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Post', new_post_path

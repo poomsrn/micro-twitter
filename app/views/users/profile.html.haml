@@ -1,0 +1,61 @@
+%p#notice= notice
+%h5= "#{@user_follow.name} Feed"
+.row
+  .col
+    .container
+      %tbody
+        - @user_follow.posts.each do |post|
+          .container.border.border-2.m-2.row
+            .col
+              %p= "id: #{post.user_id}"
+              %p= "create at: #{post.created_at}"
+              %p= "message: #{post.message}"
+              %p= "likes: #{Like.where(post_id: post.id).count}"
+            .col
+              %p
+                -if Like.where(post_id: post.id).find_by(user_id: session[:user_id])
+                  %a.btn.btn-outline-primary{:href => "/likes/unLike/#{post.id}", :role => "button"} Unlike
+                -else
+                  %a.btn.btn-outline-primary{:href => "/likes/newLike/#{post.id}", :role => "button"} Like
+              %td
+                / Button trigger modal
+                %button.btn.btn-primary.showLike{"data-bs-target" => "#showLike", "data-bs-toggle" => "modal", :type => "button","dataModal": post.like_by_user.to_json}
+                  SEE LIKES
+                / Modal
+    %br
+  .col
+    .d-grid.gap-2.d-md-flex.justify-content-md-end
+      - if Follow.find_by(follower_id:session[:user_id],followee_id:@user_follow.id) && session[:user_id] != @user_follow.id
+        %a.btn.btn-outline-primary{:href => "/follows/unFollow/#{@user_follow.id}", :role => "button"} Unfollow
+      - elsif session[:user_id] == @user_follow.id
+      - else
+        %a.btn.btn-outline-primary{:href => "/follows/newFollow/#{@user_follow.id}", :role => "button"} Follow
+-# .modal.fade{id:"showPost#{post.id}","aria-hidden" => "true", :tabindex => "-1"}
+.modal.fade{id:"showLike"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title User who like this post
+        %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
+      .modal-body
+        .div#modal_body
+          -# -Like.where(post_id: post.id).each do |like|
+          -# %a{href: "/profile/#{User.find(like.user_id).name}", class:"list-group-item"} #{User.find(like.user_id).name}
+      -#.modal-footer
+        -#%button.btn.btn-secondary{"data-bs-dismiss" => "modal", :type => "button"} Close
+    %br
+
+%a.btn.btn-outline-dark{:href => feed_path, :role => "button"} Feed
+
+
+:javascript
+  $(".showLike").click(function(){
+    $("#modal_body").empty();
+    var userJson = $(this).attr("dataModal");
+    var userObject = jQuery.parseJSON(userJson);
+    userObject.forEach((user) =>{
+      var link = `<a href ="${user.name}"> ${user.name} </a> <br><br>`;
+      $("#modal_body").append(link);   
+    })
+    //var myModal = new bootstrap.Modal(document.getElementById(`showLike`, {}));
+  });

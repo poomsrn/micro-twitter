@@ -1,0 +1,26 @@
+-# frozen_string_literal: true
+= simple_form_for(@user) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .form-inputs
+    .container-sm
+      .col-md-6.col-sm-12
+        .row
+          = f.input :email
+        .row
+          = f.input :name, :require => ""
+        .row  
+          = f.input :password
+        .row  
+          = f.input :password_confirmation
+
+  %br
+  .form-actions
+    .col-md-6.col-sm-12
+      .d-grid.gap-2.d-md-flex.justify-content-md-center
+        %input.btn.btn-outline-success{:type => "submit", :value => "OK"}/
+        %a.btn.btn-outline-primary{:href => "/main", :role => "button"} cancel
+
+  / .form-actions
+  /   = f.button :submit, class: 'btn btn-outline-success'

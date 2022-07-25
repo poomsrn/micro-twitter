@@ -1,0 +1,13 @@
+-# frozen_string_literal: true
+= simple_form_for(@follow) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+  = f.hidden_field :follower_id, value: session[:user_id]
+  = f.hidden_field :followee_id, value: @followee_id
+  .form-actions
+    .container-sm
+      .row-mb-6
+        .d-grid.gap-2.d-md-flex.justify-content-md-center
+          %input.btn.btn-outline-success{:type => "submit", :value => "confirm"}/
+          %a.btn.btn-outline-primary{:href => "/profile/#{User.find(@followee_id).name}", :role => "button"} cancel
+                

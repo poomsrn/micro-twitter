@@ -1,0 +1,7 @@
+- flash.each do |type, msg|
+	.alert.alert-danger
+		= msg
+.row.justify-content-md-center
+	.col-md-6.col-sm-12
+		%h1 Login
+= render "formMain" ,user:@user

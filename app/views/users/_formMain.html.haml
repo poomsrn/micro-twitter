@@ -1,0 +1,28 @@
+= simple_form_for(@user, url:"/main") do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+  / .form-inputs
+  / .field
+  /   = form.label :email
+  /   = form.text_field :email
+  / .field
+  /   = form.label :password
+  /   = form.password_field :password
+  / .actions
+  /   = form.submit value="submit"
+
+  .form-inputs
+    .container-sm
+      .row.justify-content-md-center
+        .col-md-6.col-sm-12
+          = f.input :email
+      .row.justify-content-md-center
+        .col-md-6.col-sm-12
+          = f.input :password
+      %br
+      .row.justify-content-md-center
+        .col-md-6.col-sm-12
+          .d-grid.gap-2.d-md-flex.justify-content-md-center
+            %input.btn.btn-outline-success{:type => "submit", :value => "Login"}/
+            %a.btn.btn-outline-primary{:href => "/register", :role => "button"} Register
+            

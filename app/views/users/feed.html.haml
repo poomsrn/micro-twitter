@@ -1,0 +1,56 @@
+- flash.each do |type, msg|
+  .alert.alert-info
+    = msg
+%h1 Feed
+
+.row
+  .col
+    .container
+      %tbody
+        - Post.where(user_id: @ids).order('created_at DESC').each do |post|
+          .container.border.border-2.m-2.row
+            .col
+              %p= "id: #{post.user_id}"
+              %p= "create at: #{post.created_at}"
+              %p= "message: #{post.message}"
+              %p= "likes: #{Like.where(post_id: post.id).count}"
+            .col
+              %p
+                -if Like.where(post_id: post.id).find_by(user_id: @user.id)
+                  %a.btn.btn-outline-primary{:href => "/likes/unLike/#{post.id}", :role => "button"} Unlike
+                -else
+                  %a.btn.btn-outline-primary{:href => "/likes/newLike/#{post.id}", :role => "button"} Like
+              %td
+                / Button trigger modal
+                %button.btn.btn-primary.showLike{"data-bs-target" => "#showLike", "data-bs-toggle" => "modal", :type => "button","dataModal": post.like_by_user.to_json}
+                  SEE LIKES
+                / Modal
+  .col
+    .d-grid.gap-2.d-md-flex.justify-content-md-end
+      %a.btn.btn-outline-primary{:href => "/newById", :role => "button"} Post
+-# .modal.fade{id:"showPost#{post.id}","aria-hidden" => "true", :tabindex => "-1"}
+.modal.fade{id:"showLike"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title User who like this post
+        %button.btn-close{"data-bs-dismiss" => "modal"}
+      .modal-body
+        .div#modal_body
+          -# -Like.where(post_id: post.id).each do |like|
+          -# %a{href: "/profile/#{User.find(like.user_id).name}", class:"list-group-item"} #{User.find(like.user_id).name}
+      -#.modal-footer
+        -#%button.btn.btn-secondary{"data-bs-dismiss" => "modal", :type => "button"} Close
+/ = link_to 'New Follow', new_follow_path
+
+:javascript
+  $(".showLike").click(function(){
+    $("#modal_body").empty();
+    var userJson = $(this).attr("dataModal");
+    var userObject = jQuery.parseJSON(userJson);
+    userObject.forEach((user) =>{
+      var link = `<a href ="profile/${user.name}"> ${user.name} </a> <br><br>`;
+      $("#modal_body").append(link);   
+    })
+    // var myModal = new bootstrap.Modal(document.getElementById(`showLike`, {}));
+  });
